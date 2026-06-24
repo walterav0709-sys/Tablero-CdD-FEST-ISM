@@ -1,0 +1,3046 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard consolidado ITF</title>
+  <style>
+    :root {
+      --red: #c02026;
+      --red-dark: #9f171c;
+      --rose: #ff5f7b;
+      --gold: #f5b82e;
+      --green: #58c96d;
+      --gray-card: #666666;
+      --gray-tab: #9a9a9a;
+      --ink: #3d3d3d;
+      --muted: #6c6c6c;
+      --line: #d8d8d8;
+      --soft: #f1f1f1;
+      --panel: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Aptos, Segoe UI, Arial, sans-serif;
+      background: var(--soft);
+      color: var(--ink);
+    }
+    header {
+      background: #ffffff;
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(0,0,0,.18);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .topbar {
+      display: grid;
+      grid-template-columns: 205px 1fr 250px;
+      align-items: stretch;
+      min-height: 52px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 10px;
+      font-weight: 800;
+      font-size: 24px;
+      color: #6a6a6a;
+    }
+    .brand b {
+      color: var(--red);
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(110px, 1fr));
+      background: var(--red);
+      color: white;
+      overflow: hidden;
+      border-radius: 0 0 0 4px;
+    }
+    .nav span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 15px;
+      line-height: 1.15;
+    }
+    .nav .active {
+      font-weight: 800;
+      background: var(--red-dark);
+      box-shadow: inset 0 -4px 0 white;
+    }
+    .logos {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+    }
+    .logo-box {
+      border-radius: 4px;
+      background: #f4f4f4;
+      border: 1px solid #d0d0d0;
+      padding: 5px 8px;
+      font-weight: 800;
+      font-size: 11px;
+      color: var(--red);
+      min-width: 55px;
+      text-align: center;
+    }
+    .title-strip {
+      background: #ffffff;
+      padding: 12px 28px 10px;
+      border-top: 1px solid #eeeeee;
+    }
+    .title-strip h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: 0;
+      color: var(--red);
+    }
+    .title-strip p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    main {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 22px 28px 44px;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .kpi {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 88px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    }
+    .kpi span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .kpi strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 22px;
+      line-height: 1.1;
+      background: var(--gray-card);
+      color: white;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    section, .project {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.14);
+    }
+    section {
+      padding: 16px;
+    }
+    h2, h3, h4 {
+      margin: 0;
+      color: var(--red);
+      letter-spacing: 0;
+    }
+    h2 { font-size: 17px; margin-bottom: 12px; }
+    h3 {
+      background: var(--red);
+      color: white;
+      font-size: 17px;
+      padding: 11px 14px;
+      border-radius: 8px 8px 0 0;
+    }
+    h4 {
+      font-size: 14px;
+      margin: 16px 0 8px;
+      border-left: 4px solid var(--red);
+      padding-left: 8px;
+    }
+    .compare {
+      display: grid;
+      gap: 11px;
+    }
+    .compare-row {
+      display: grid;
+      grid-template-columns: 260px 1fr 135px;
+      gap: 12px;
+      align-items: center;
+      font-size: 12px;
+      border-bottom: 1px solid #edf1f5;
+      padding-bottom: 9px;
+    }
+    .project-label strong {
+      display: block;
+      font-size: 13px;
+    }
+    .project-label span {
+      color: var(--muted);
+    }
+    .bar-pair {
+      display: grid;
+      gap: 5px;
+    }
+    .bar-track {
+      height: 20px;
+      background: #edf2f7;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .bar {
+      height: 100%;
+      min-width: 2px;
+    }
+    .physical { background: var(--rose); }
+    .financial { background: var(--gold); }
+    .legend {
+      display: flex;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 12px;
+    }
+    .legend i {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      margin-right: 5px;
+      vertical-align: -1px;
+    }
+    .analysis {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.5;
+    }
+    .project-picker {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .pick-card {
+      border: 1px solid var(--line);
+      background: #fbfcfd;
+      padding: 11px;
+      border-radius: 8px;
+      box-shadow: 0 1px 5px rgba(0,0,0,.08);
+    }
+    .pick-card strong {
+      display: block;
+      color: var(--red);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .pick-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      min-height: 32px;
+    }
+    .pick-card button,
+    .show-all {
+      margin-top: 10px;
+      width: 100%;
+      border: 0;
+      background: var(--red);
+      color: white;
+      padding: 8px 10px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .show-all {
+      width: auto;
+      min-width: 170px;
+      margin-top: 12px;
+      background: var(--gray-card);
+    }
+    .pick-card button:hover,
+    .show-all:hover {
+      filter: brightness(0.94);
+    }
+    .hidden {
+      display: none !important;
+    }
+    .project-body {
+      padding: 14px;
+    }
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid #9ca3af;
+      margin-top: 8px;
+    }
+    .data-cell {
+      border-right: 1px solid #9ca3af;
+      border-bottom: 1px solid #9ca3af;
+      text-align: center;
+      padding: 7px 9px;
+      min-height: 34px;
+    }
+    .data-cell:nth-child(3n) { border-right: 0; }
+    .data-label {
+      background: #f2f2f2;
+      font-weight: 700;
+    }
+    .full-row {
+      grid-column: span 3;
+      border-right: 0;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .field {
+      border: 1px solid var(--line);
+      padding: 9px;
+      background: #fbfcfd;
+      border-radius: 6px;
+    }
+    .field b {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+    th {
+      background: var(--red);
+      color: white;
+      text-align: left;
+      padding: 8px;
+      font-size: 12px;
+      position: sticky;
+      top: 0;
+    }
+    td {
+      border-top: 1px solid var(--line);
+      padding: 8px;
+      font-size: 12px;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8fbfd; }
+    .num { text-align: right; white-space: nowrap; }
+    .note {
+      background: #fbfcfd;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--red);
+      border-radius: 6px;
+      padding: 10px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+    .excluded {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    @media (max-width: 1100px) {
+      .topbar { grid-template-columns: 1fr; }
+      .nav { grid-template-columns: 1fr 1fr; border-radius: 0; }
+      .logos { justify-content: flex-start; }
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .compare-row { grid-template-columns: 1fr; }
+      .data-grid, .two-col { grid-template-columns: 1fr; }
+      .data-cell, .data-cell:nth-child(3n) { border-right: 0; }
+      .full-row { grid-column: span 1; }
+    }
+    @media print {
+      body { background: white; }
+      .project, section { break-inside: avoid; }
+      th { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">Intervenciones <b>ITP</b></div>
+      <nav class="nav" aria-label="Navegación visual">
+        <span class="active">Resumen<br>Ejecutivo</span>
+        <span>Presupuesto</span>
+        <span>Inversiones</span>
+        <span>Servicios<br>Tecnológicos</span>
+        <span>Proyectos<br>ITF</span>
+      </nav>
+      <div class="logos">
+        <div class="logo-box">PERÚ</div>
+        <div class="logo-box">PRODUCE</div>
+        <div class="logo-box">ITP</div>
+      </div>
+    </div>
+    <div class="title-strip">
+      <h1>Dashboard consolidado ITF</h1>
+      <p>Pestaña “5. ITF” de los archivos Excel disponibles. Generado el 2026-06-24.</p>
+    </div>
+  </header>
+  <main>
+    <div class="kpis">
+      <div class="kpi"><span>Número de proyectos</span><strong>8</strong></div>
+      <div class="kpi"><span>Promedio avance físico</span><strong>103.7%</strong></div>
+      <div class="kpi"><span>Promedio avance financiero</span><strong>30.4%</strong></div>
+      <div class="kpi"><span>Actividades programadas</span><strong>462</strong></div>
+      <div class="kpi"><span>Actividades ejecutadas</span><strong>545</strong></div>
+      <div class="kpi"><span>Presupuesto programado</span><strong>S/ 164,129.00</strong></div>
+      <div class="kpi"><span>Presupuesto ejecutado</span><strong>S/ 285,549.00</strong></div>
+    </div>
+
+    <section>
+      <h2>Avance físico y financiero por proyecto</h2>
+      <div class="compare">
+        <div class="compare-row">
+          <div class="project-label"><strong>1054-2026</strong><span>CITEproductivo VRAEM</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:100.0%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:16.7%"></div></div>
+          </div>
+          <div>168.5% físico<br>28.1% financiero</div>
+        </div>
+        <div class="compare-row">
+          <div class="project-label"><strong>1059-2026</strong><span>CITE cuero calzado Trujillo</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:88.5%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:15.9%"></div></div>
+          </div>
+          <div>149.0% físico<br>26.7% financiero</div>
+        </div>
+        <div class="compare-row">
+          <div class="project-label"><strong>1025-2026</strong><span>Unidad Técnica textil y confecciones Lima</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:62.7%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:35.3%"></div></div>
+          </div>
+          <div>105.6% físico<br>59.4% financiero</div>
+        </div>
+        <div class="compare-row">
+          <div class="project-label"><strong>0006-2026</strong><span>CITEcuero, Calzado, Textil, Confecciones e Industrias Conexas</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:59.4%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:11.1%"></div></div>
+          </div>
+          <div>100.0% físico<br>18.6% financiero</div>
+        </div>
+        <div class="compare-row">
+          <div class="project-label"><strong>0006-2026</strong><span>CITE Forestal Pucallpa 1052-2026</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:59.4%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:22.7%"></div></div>
+          </div>
+          <div>100.0% físico<br>38.2% financiero</div>
+        </div>
+        <div class="compare-row">
+          <div class="project-label"><strong>1053-2026</strong><span>CITE Textil Camélidos Puno</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:34.6%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:18.4%"></div></div>
+          </div>
+          <div>58.3% físico<br>31.0% financiero</div>
+        </div>
+        <div class="compare-row">
+          <div class="project-label"><strong>1025-2026</strong><span>CITE Textil Camélidos Cusco</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:26.6%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:20.4%"></div></div>
+          </div>
+          <div>44.8% físico<br>34.3% financiero</div>
+        </div>
+        <div class="compare-row">
+          <div class="project-label"><strong>1054-2026</strong><span>CITEagroindustrial Ica</span></div>
+          <div class="bar-pair">
+            <div class="bar-track"><div class="bar physical" style="width:0.0%"></div></div>
+            <div class="bar-track"><div class="bar financial" style="width:4.1%"></div></div>
+          </div>
+          <div>0.0% físico<br>6.9% financiero</div>
+        </div>
+      </div>
+      <div class="legend"><span><i class="physical"></i>Avance físico</span><span><i class="financial"></i>Avance financiero</span></div>
+    </section>
+
+    <section>
+      <h2>Resumen de análisis de resultados</h2>
+      <ul class="analysis">
+        <li>El mayor avance físico corresponde a 1054-2026 - CITEproductivo VRAEM, con 168.5%.</li>
+        <li>El menor avance físico corresponde a 1054-2026 - CITEagroindustrial Ica, con -.</li>
+        <li>Se observan brechas relevantes entre avance físico y financiero en: 1059-2026 (149.0% vs 26.7%); 0006-2026 (100.0% vs 18.6%); 0006-2026 (100.0% vs 38.2%); 1054-2026 (168.5% vs 28.1%).</li>
+        <li>7 proyectos registran avance financiero menor a 40%, por lo que requieren revisión de ejecución presupuestal y sustento.</li>
+        <li>Existen 15 actividades con avance mayor a 100%; conviene validar metas programadas, ejecución y fórmulas de porcentaje.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Lista de proyectos</h2>
+      <div class="project-picker">
+        <div class="pick-card">
+          <strong>1054-2026</strong>
+          <span>CITEproductivo VRAEM</span>
+          <button type="button" data-target="project-1">Ver proyecto</button>
+        </div>
+        <div class="pick-card">
+          <strong>1059-2026</strong>
+          <span>CITE cuero calzado Trujillo</span>
+          <button type="button" data-target="project-2">Ver proyecto</button>
+        </div>
+        <div class="pick-card">
+          <strong>1025-2026</strong>
+          <span>Unidad Técnica textil y confecciones Lima</span>
+          <button type="button" data-target="project-3">Ver proyecto</button>
+        </div>
+        <div class="pick-card">
+          <strong>0006-2026</strong>
+          <span>CITEcuero, Calzado, Textil, Confecciones e Industrias Conexas</span>
+          <button type="button" data-target="project-4">Ver proyecto</button>
+        </div>
+        <div class="pick-card">
+          <strong>0006-2026</strong>
+          <span>CITE Forestal Pucallpa 1052-2026</span>
+          <button type="button" data-target="project-5">Ver proyecto</button>
+        </div>
+        <div class="pick-card">
+          <strong>1053-2026</strong>
+          <span>CITE Textil Camélidos Puno</span>
+          <button type="button" data-target="project-6">Ver proyecto</button>
+        </div>
+        <div class="pick-card">
+          <strong>1025-2026</strong>
+          <span>CITE Textil Camélidos Cusco</span>
+          <button type="button" data-target="project-7">Ver proyecto</button>
+        </div>
+        <div class="pick-card">
+          <strong>1054-2026</strong>
+          <span>CITEagroindustrial Ica</span>
+          <button type="button" data-target="project-8">Ver proyecto</button>
+        </div>
+      </div>
+      <button class="show-all" type="button" id="showAllProjects">Mostrar todos los proyectos</button>
+    </section>
+    <article class="project" id="project-1">
+      <h3>1. 1054-2026 - CITEproductivo VRAEM</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>CITEproductivo VRAEM</div>
+          <div class="field"><b>Título del proyecto</b>Incremento de la Competitividad y Productividad de las Unidades Productivas del VRAEM mediante Servicios Especializados de Capacitación e Información Tecnológica en las Cadenas de Valor de Café, Cacao y Frutas</div>
+          <div class="field"><b>Código del proyecto</b>1054-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 1.00</div>
+          <div class="data-cell">S/ 300,000.00</div>
+          <div class="data-cell">S/ 75,000.00</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 158,350.00</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Servicio</td>
+                <td>1.1 Brindar servicios de capacitación en: Métodos de extracción de café en las UP.</td>
+                <td>20 Unidades Productivas (UP) de la cadena de café capacitadas en métodos de extracción para la mejora de la calidad en taza.</td>
+                <td class="num">20</td>
+                <td class="num">10</td>
+                <td class="num">27</td>
+                <td class="num">270.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Servicio</td>
+                <td>1.2 Brindar servicios de capacitación en Tecnología de Obtención y Secado de Pulpa de Café en las UP.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en tecnología de obtención y secado de pulpa de café.</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Servicio</td>
+                <td>1.3 Brindar servicios de capacitación en: Bebidas fermentadas en base a la Pulpa de Café en las UP.</td>
+                <td>15 Unidades Productivas (UP) capacitadas en procesos de elaboración de bebidas fermentadas a partir de pulpa de café</td>
+                <td class="num">15</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Servicio</td>
+                <td>1.4 Brindar servicios de capacitación en: &quot;Transformación Sostenible: Aplicando la Economía Circular a los Subproductos del Café&quot;.</td>
+                <td>15 Unidades Productivas (UP) capacitadas en procesos de Transformación Sostenible: Aplicando la Economía Circular a los Subproductos del Café</td>
+                <td class="num">15</td>
+                <td class="num">5</td>
+                <td class="num">17</td>
+                <td class="num">340.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Servicio</td>
+                <td>1.5 Brindar servicios de capacitación en: “Chocolatería y pastelería artística”.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en técnicas especializadas de chocolatería y pastelería artística</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Servicio</td>
+                <td>1.6 Brindar servicios de capacitación en: Bebidas fermentadas y destilados del mucilago de cacao en las UP.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en procesos de elaboración de bebidas fermentadas y destilados a partir del mucílago de cacao.</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>Servicio</td>
+                <td>1.7 Brindar servicios de capacitación en: &quot;Transformación Sostenible: Aplicando la Economía Circular a los Subproductos del Cacao.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en modelos de economía circular y transformación sostenible de subproductos del cacao.</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">8</td>
+                <td>Servicio</td>
+                <td>1.8 Brindar servicios de capacitación en &quot;Formulación y desarrollo de chocolates de Cacaos Finos de Aroma.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en formulación y desarrollo de chocolates elaborados con cacaos finos de aroma</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">20</td>
+                <td class="num">200.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">9</td>
+                <td>Servicio</td>
+                <td>1.9 Brindar servicios de capacitación en: &quot;Formulación y Control de Calidad para Grageados de Chocolate Fino.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en formulación y control de calidad para la elaboración de grageados de chocolate fino.</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">20</td>
+                <td class="num">200.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">10</td>
+                <td>Servicio</td>
+                <td>1.10 Brindar servicios de capacitación especializada en: Biotecnología y Diseño de Procesos para Bebidas Fermentadas de Frutas.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en biotecnología y diseño de procesos para la elaboración de bebidas fermentadas de frutas.</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">11</td>
+                <td>Servicio</td>
+                <td>1.11 Brindar servicios de capacitación especializada: “Tecnología de Deshidratado y Estabilización de Frutas: Métodos Avanzados para la Calidad Sensorial y la Larga Vida Útil&quot;.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en tecnologías de deshidratado, estabilización y métodos avanzados para asegurar la calidad sensorial y vida útil de las frutas.</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">12</td>
+                <td>Servicio</td>
+                <td>1.12 Brindar servicios de capacitación en: &quot;Modelos de Negocio Circulares para la Agroindustria Frutícola&quot;.</td>
+                <td>10 Unidades Productivas (UP) de la cadena de frutas capacitadas en el diseño e implementación de modelos de negocio circulares.</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">13</td>
+                <td>Servicio</td>
+                <td>1.13 Brindar servicios de capacitación en: &quot;Elaboración de helados artesanales&quot;.</td>
+                <td>10 Unidades Productivas (UP) capacitadas en técnicas de formulación y elaboración de helados artesanales a partir de insumos locales.</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">14</td>
+                <td>Servicio</td>
+                <td>2.1 Brindar servicios de charlas técnicas en: La Genética del Cacao y su Impacto en la Post-Cosecha.</td>
+                <td>15 Unidades Productivas (UP) informadas sobre la genética del cacao y su impacto directo en los procesos de post-cosecha.</td>
+                <td class="num">15</td>
+                <td class="num">7</td>
+                <td class="num">9</td>
+                <td class="num">128.6%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">15</td>
+                <td>Servicio</td>
+                <td>2.2 Brindar servicios de charlas técnicas en: Evaluación de parámetros (Acidez y dulzor de la masa fresca de cacao) en los cacaos finos de aroma.</td>
+                <td>15 Unidades Productivas (UP) de la cadena de cacao acceden a información tecnológica especializada sobre la evaluación de parámetros de acidez y dulzor en masa fresca para la mejora de la calidad de cacaos finos de aroma.</td>
+                <td class="num">15</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">16</td>
+                <td>Servicio</td>
+                <td>2.3 Brindar servicios de charlas técnicas en: Aplicación de normas técnicas en los procesos de tranformación artesanal e industrial de cacao.</td>
+                <td>15 Unidades Productivas (UP) de la cadena de cacao acceden a información tecnológica especializada sobre genética y su impacto en la optimización de los procesos de post-cosecha</td>
+                <td class="num">15</td>
+                <td class="num">15</td>
+                <td class="num">24</td>
+                <td class="num">160.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">17</td>
+                <td>Servicio</td>
+                <td>2.4 Brindar servicios de charlas técnicas en: Uso de los residuos cacao de producción primaria e industrial para la generación de productos innovadores.</td>
+                <td>15 Unidades Productivas (UP) de la cadena de cacao acceden a información tecnológica especializada sobre el aprovechamiento de residuos de producción primaria e industrial para la generación de productos innovadores.</td>
+                <td class="num">15</td>
+                <td class="num">15</td>
+                <td class="num">41</td>
+                <td class="num">273.3%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">18</td>
+                <td>Servicio</td>
+                <td>2.5 Brindar servicios de charlas técnicas en: Ingeniería de la extracción de café para la máxima rentabilidad de tu Unidad Productiva (UP).</td>
+                <td>22 Unidades Productivas (UP) de la cadena de café acceden a información tecnológica especializada sobre ingeniería de la extracción para la optimización de la rentabilidad en sus procesos productivos.</td>
+                <td class="num">22</td>
+                <td class="num">15</td>
+                <td class="num">16</td>
+                <td class="num">106.7%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">19</td>
+                <td>Servicio</td>
+                <td>2.6 Brindar servicios de charlas técnicas en: Costos de producción de café tostado y molido.</td>
+                <td>14 Unidades Productivas (UP) de la cadena de café acceden a información tecnológica especializada sobre el análisis y determinación de costos de producción para café tostado y molido.</td>
+                <td class="num">14</td>
+                <td class="num">7</td>
+                <td class="num">10</td>
+                <td class="num">142.9%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">20</td>
+                <td>Servicio</td>
+                <td>2.7 Brindar servicios de charlas técnicas en: Uso de los residuos café de producción primaria e industrial para la generación de productos innovadores.</td>
+                <td>14 Unidades Productivas (UP) de la cadena de café acceden a información tecnológica especializada sobre el aprovechamiento de residuos de producción primaria e industrial para la generación de productos innovadores.</td>
+                <td class="num">14</td>
+                <td class="num">7</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">21</td>
+                <td>Servicio</td>
+                <td>2.8 Brindar servicios de charlas técnicas en: Estrategias de Negocio, Acceso a Mercados y Apalancamiento Financiero para la Cadena Frutícola.</td>
+                <td>15 Unidades Productivas (UP) de la cadena de frutas acceden a información tecnológica especializada sobre estrategias de negocio, mecanismos de acceso a mercados y oportunidades de apalancamiento financiero.</td>
+                <td class="num">15</td>
+                <td class="num">15</td>
+                <td class="num">30</td>
+                <td class="num">200.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">22</td>
+                <td>Servicio</td>
+                <td>2.9 Brindar servicios de charlas técnicas en: Innovación en Procesos y Desarrollo de Productos Estabilizados de Frutas.</td>
+                <td>15 Unidades Productivas (UP) de la cadena de frutas acceden a información tecnológica especializada sobre innovación en procesos y técnicas de estabilización para el desarrollo de nuevos productos.</td>
+                <td class="num">15</td>
+                <td class="num">7</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">23</td>
+                <td>Servicio</td>
+                <td>2.10 Brindar servicios de charlas técnicas en: Biotecnología y Diseño de Procesos para Bebidas Fermentadas de Frutas.</td>
+                <td>14 Unidades Productivas (UP) de la cadena de frutas acceden a información tecnológica especializada sobre biotecnología aplicada y diseño de procesos para la elaboración de bebidas fermentadas.</td>
+                <td class="num">14</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. SERVICIOS BRINDADOS Y UNIDADES PRODUCTIVAS ATENDIDAS ITEM | Periodos del RSM | UP ATENDIDAS | SERVICIOS TECNOLÓGICOS Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) preliminar</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1054-2026</td>
+                <td>PET</td>
+                <td>1 | 300000 | 75000 | 375000</td>
+              </tr>
+              <tr>
+                <td class="num">dd/mm/aaaa</td>
+                <td>1.0</td>
+                <td>225.0 | 158350 | Del: 19/03/2026 | Al: 19/06/2026</td>
+              </tr>
+              <tr>
+                <td class="num">1.0</td>
+                <td>Servicio</td>
+                <td>1.1 Brindar servicios de capacitación en: Métodos de extracción de café en las UP. | 20 Unidades Productivas (UP) de la cadena de café capacitadas en métodos de extracción para la mejora de la calidad en taza. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 20 | 10 | 27 | 2.7</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>Servicio</td>
+                <td>1.2 Brindar servicios de capacitación en Tecnología de Obtención y Secado de Pulpa de Café en las UP. | 10 Unidades Productivas (UP) capacitadas en tecnología de obtención y secado de pulpa de café. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>Servicio</td>
+                <td>1.3 Brindar servicios de capacitación en: Bebidas fermentadas en base a la Pulpa de Café en las UP. | 15 Unidades Productivas (UP) capacitadas en procesos de elaboración de bebidas fermentadas a partir de pulpa de café | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 15 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">4.0</td>
+                <td>Servicio</td>
+                <td>1.4 Brindar servicios de capacitación en: &quot;Transformación Sostenible: Aplicando la Economía Circular a los Subproductos del Café&quot;. | 15 Unidades Productivas (UP) capacitadas en procesos de Transformación Sostenible: Aplicando la Economía Circular a los Subproductos del Café | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 15 | 5 | 17 | 3.4</td>
+              </tr>
+              <tr>
+                <td class="num">5.0</td>
+                <td>Servicio</td>
+                <td>1.5 Brindar servicios de capacitación en: “Chocolatería y pastelería artística”. | 10 Unidades Productivas (UP) capacitadas en técnicas especializadas de chocolatería y pastelería artística | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">6.0</td>
+                <td>Servicio</td>
+                <td>1.6 Brindar servicios de capacitación en: Bebidas fermentadas y destilados del mucilago de cacao en las UP. | 10 Unidades Productivas (UP) capacitadas en procesos de elaboración de bebidas fermentadas y destilados a partir del mucílago de cacao. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">7.0</td>
+                <td>Servicio</td>
+                <td>1.7 Brindar servicios de capacitación en: &quot;Transformación Sostenible: Aplicando la Economía Circular a los Subproductos del Cacao. | 10 Unidades Productivas (UP) capacitadas en modelos de economía circular y transformación sostenible de subproductos del cacao. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">8.0</td>
+                <td>Servicio</td>
+                <td>1.8 Brindar servicios de capacitación en &quot;Formulación y desarrollo de chocolates de Cacaos Finos de Aroma. | 10 Unidades Productivas (UP) capacitadas en formulación y desarrollo de chocolates elaborados con cacaos finos de aroma | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 10 | 20 | 2</td>
+              </tr>
+              <tr>
+                <td class="num">9.0</td>
+                <td>Servicio</td>
+                <td>1.9 Brindar servicios de capacitación en: &quot;Formulación y Control de Calidad para Grageados de Chocolate Fino. | 10 Unidades Productivas (UP) capacitadas en formulación y control de calidad para la elaboración de grageados de chocolate fino. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 10 | 20 | 2</td>
+              </tr>
+              <tr>
+                <td class="num">10.0</td>
+                <td>Servicio</td>
+                <td>1.10 Brindar servicios de capacitación especializada en: Biotecnología y Diseño de Procesos para Bebidas Fermentadas de Frutas. | 10 Unidades Productivas (UP) capacitadas en biotecnología y diseño de procesos para la elaboración de bebidas fermentadas de frutas. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">11.0</td>
+                <td>Servicio</td>
+                <td>1.11 Brindar servicios de capacitación especializada: “Tecnología de Deshidratado y Estabilización de Frutas: Métodos Avanzados para la Calidad Sensorial y la Larga Vida Útil&quot;. | 10 Unidades Productivas (UP) capacitadas en tecnologías de deshidratado, estabilización y métodos avanzados para asegurar la calidad sensorial y vida útil de las frutas. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">12.0</td>
+                <td>Servicio</td>
+                <td>1.12 Brindar servicios de capacitación en: &quot;Modelos de Negocio Circulares para la Agroindustria Frutícola&quot;. | 10 Unidades Productivas (UP) de la cadena de frutas capacitadas en el diseño e implementación de modelos de negocio circulares. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">13.0</td>
+                <td>Servicio</td>
+                <td>1.13 Brindar servicios de capacitación en: &quot;Elaboración de helados artesanales&quot;. | 10 Unidades Productivas (UP) capacitadas en técnicas de formulación y elaboración de helados artesanales a partir de insumos locales. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. - Sistematización de los resultados de las pruebas de entrada y salida. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">14.0</td>
+                <td>Servicio</td>
+                <td>2.1 Brindar servicios de charlas técnicas en: La Genética del Cacao y su Impacto en la Post-Cosecha. | 15 Unidades Productivas (UP) informadas sobre la genética del cacao y su impacto directo en los procesos de post-cosecha. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 15 | 7 | 9 | 1.285714286</td>
+              </tr>
+              <tr>
+                <td class="num">15.0</td>
+                <td>Servicio</td>
+                <td>2.2 Brindar servicios de charlas técnicas en: Evaluación de parámetros (Acidez y dulzor de la masa fresca de cacao) en los cacaos finos de aroma. | 15 Unidades Productivas (UP) de la cadena de cacao acceden a información tecnológica especializada sobre la evaluación de parámetros de acidez y dulzor en masa fresca para la mejora de la calidad de cacaos finos de aroma. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 15 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">16.0</td>
+                <td>Servicio</td>
+                <td>2.3 Brindar servicios de charlas técnicas en: Aplicación de normas técnicas en los procesos de tranformación artesanal e industrial de cacao. | 15 Unidades Productivas (UP) de la cadena de cacao acceden a información tecnológica especializada sobre genética y su impacto en la optimización de los procesos de post-cosecha | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 15 | 15 | 24 | 1.6</td>
+              </tr>
+              <tr>
+                <td class="num">17.0</td>
+                <td>Servicio</td>
+                <td>2.4 Brindar servicios de charlas técnicas en: Uso de los residuos cacao de producción primaria e industrial para la generación de productos innovadores. | 15 Unidades Productivas (UP) de la cadena de cacao acceden a información tecnológica especializada sobre el aprovechamiento de residuos de producción primaria e industrial para la generación de productos innovadores. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 15 | 15 | 41 | 2.733333333</td>
+              </tr>
+              <tr>
+                <td class="num">18.0</td>
+                <td>Servicio</td>
+                <td>2.5 Brindar servicios de charlas técnicas en: Ingeniería de la extracción de café para la máxima rentabilidad de tu Unidad Productiva (UP). | 22 Unidades Productivas (UP) de la cadena de café acceden a información tecnológica especializada sobre ingeniería de la extracción para la optimización de la rentabilidad en sus procesos productivos. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 22 | 15 | 16 | 1.066666667</td>
+              </tr>
+              <tr>
+                <td class="num">19.0</td>
+                <td>Servicio</td>
+                <td>2.6 Brindar servicios de charlas técnicas en: Costos de producción de café tostado y molido. | 14 Unidades Productivas (UP) de la cadena de café acceden a información tecnológica especializada sobre el análisis y determinación de costos de producción para café tostado y molido. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 14 | 7 | 10 | 1.428571429</td>
+              </tr>
+              <tr>
+                <td class="num">20.0</td>
+                <td>Servicio</td>
+                <td>2.7 Brindar servicios de charlas técnicas en: Uso de los residuos café de producción primaria e industrial para la generación de productos innovadores. | 14 Unidades Productivas (UP) de la cadena de café acceden a información tecnológica especializada sobre el aprovechamiento de residuos de producción primaria e industrial para la generación de productos innovadores. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 14 | 7 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">21.0</td>
+                <td>Servicio</td>
+                <td>2.8 Brindar servicios de charlas técnicas en: Estrategias de Negocio, Acceso a Mercados y Apalancamiento Financiero para la Cadena Frutícola. | 15 Unidades Productivas (UP) de la cadena de frutas acceden a información tecnológica especializada sobre estrategias de negocio, mecanismos de acceso a mercados y oportunidades de apalancamiento financiero. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 15 | 15 | 30 | 2</td>
+              </tr>
+              <tr>
+                <td class="num">22.0</td>
+                <td>Servicio</td>
+                <td>2.9 Brindar servicios de charlas técnicas en: Innovación en Procesos y Desarrollo de Productos Estabilizados de Frutas. | 15 Unidades Productivas (UP) de la cadena de frutas acceden a información tecnológica especializada sobre innovación en procesos y técnicas de estabilización para el desarrollo de nuevos productos. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 15 | 7 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">23.0</td>
+                <td>Servicio</td>
+                <td>2.10 Brindar servicios de charlas técnicas en: Biotecnología y Diseño de Procesos para Bebidas Fermentadas de Frutas. | 14 Unidades Productivas (UP) de la cadena de frutas acceden a información tecnológica especializada sobre biotecnología aplicada y diseño de procesos para la elaboración de bebidas fermentadas. | Unidades Productivas | Informe del servicio, debe anexar como mínimo: - Temario. - Evidencia de convocatoria (flyer u otros). - Lista de asistentes por día. | 14 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026) preliminar</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Recursos humanos</td>
+                <td class="num">S/ 35,057.00</td>
+                <td class="num">S/ 35,057.00</td>
+                <td class="num">93.4%</td>
+              </tr>
+              <tr>
+                <td>Servicios de terceros</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 10,300.00</td>
+                <td class="num">33.3%</td>
+              </tr>
+              <tr>
+                <td>Consultorías</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Materiales e insumos</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 2,052.00</td>
+                <td class="num">19.4%</td>
+              </tr>
+              <tr>
+                <td>Inversiones en equipos y bienes duraderos</td>
+                <td class="num">S/ 3,930.00</td>
+                <td class="num">S/ 8,580.00</td>
+                <td class="num">14.7%</td>
+              </tr>
+              <tr>
+                <td>Gastos de gestión</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 213.00</td>
+                <td class="num">6.1%</td>
+              </tr>
+              <tr>
+                <td>Gastos de contingencia</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>MONTO TOTAL POR HITO</td>
+                <td class="num">S/ 38,987.00</td>
+                <td class="num">S/ 56,202.00</td>
+                <td class="num">28.1%</td>
+              </tr>
+              <tr>
+                <td>Actividad 1</td>
+                <td class="num">S/ 6,788.00</td>
+                <td class="num">S/ 13,190.00</td>
+                <td class="num">43.7%</td>
+              </tr>
+              <tr>
+                <td>Actividad 2</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 3</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 4</td>
+                <td class="num">S/ 2,100.00</td>
+                <td class="num">S/ 2,100.00</td>
+                <td class="num">45.7%</td>
+              </tr>
+              <tr>
+                <td>Actividad 5</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 6</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 300.00</td>
+                <td class="num">4.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 7</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 8</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 9</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 10</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 11</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 12</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 13</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 14</td>
+                <td class="num">S/ 2,286.00</td>
+                <td class="num">S/ 2,286.00</td>
+                <td class="num">100.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 15</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 16</td>
+                <td class="num">S/ 4,572.00</td>
+                <td class="num">S/ 4,572.00</td>
+                <td class="num">100.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 17</td>
+                <td class="num">S/ 4,572.00</td>
+                <td class="num">S/ 4,572.00</td>
+                <td class="num">100.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 18</td>
+                <td class="num">S/ 3,048.00</td>
+                <td class="num">S/ 3,048.00</td>
+                <td class="num">100.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 19</td>
+                <td class="num">S/ 2,286.00</td>
+                <td class="num">S/ 2,286.00</td>
+                <td class="num">100.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 20</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 21</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 5,500.00</td>
+                <td class="num">50.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 22</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 23</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Componente de gestión</td>
+                <td class="num">S/ 13,335.00</td>
+                <td class="num">S/ 18,348.00</td>
+                <td class="num">58.7%</td>
+              </tr>
+              <tr>
+                <td>Gastos de contingencia</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>TOTAL</td>
+                <td class="num">S/ 38,987.00</td>
+                <td class="num">S/ 56,202.00</td>
+                <td class="num">28.1%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">No registrado</div>
+      </div>
+    </article>
+    <article class="project" id="project-2">
+      <h3>2. 1059-2026 - CITE cuero calzado Trujillo</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>CITE cuero calzado Trujillo</div>
+          <div class="field"><b>Título del proyecto</b>Fortalecer la competitividad y productividad de la industria del calzado en la región La Libertad mediante la transferencia de tecnologías de fabricación aditiva y diseño digital</div>
+          <div class="field"><b>Código del proyecto</b>1059-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET1</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 300,000.00</div>
+          <div class="data-cell">S/ 75,017.00</div>
+          <div class="data-cell">S/ 375,017.00</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 96,875.00</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. | CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Servicio</td>
+                <td>1.1 Brindar capacitación especializada en fabricación aditiva con tecnologías de impresión 3D</td>
+                <td>40 UP capacitadas en procesos de impresión 3D</td>
+                <td class="num">40</td>
+                <td class="num">17</td>
+                <td class="num">30</td>
+                <td class="num">176.5%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Servicio</td>
+                <td>1.2 Brindar capacitación especializada en diseño 3D</td>
+                <td>39 UP capacitadas en diseño digital aplicado al calzado.</td>
+                <td class="num">39</td>
+                <td class="num">17</td>
+                <td class="num">46</td>
+                <td class="num">270.6%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Servicio</td>
+                <td>2.1 Brindar asistencia técnica en fabricación aditiva y diseño digital para unidades productivas de calzado</td>
+                <td>30 UP que recibieron asistencia técnica en fabricación aditiva y diseño digital</td>
+                <td class="num">30</td>
+                <td class="num">0</td>
+                <td class="num">7</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Servicio</td>
+                <td>2.2 Desarrollar prototipos con impresión 3D y modelado CAD</td>
+                <td>15 UP desarrollan productos y modelado CAD.</td>
+                <td class="num">15</td>
+                <td class="num">0</td>
+                <td class="num">8</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Servicio</td>
+                <td>3.1 Evaluar competencias laborales en diseño y procesos digitales</td>
+                <td>6 UP que cuenten con 18 trabajadores cuyas competencias labores en diseño y procesos digitales han sido evaluadas</td>
+                <td class="num">6</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Acción</td>
+                <td>4.1 Elaboración de compendio y taller de cierre.</td>
+                <td>Taller y compendio para dinamización de resultados del proyecto</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. | UNIDADES PRODUCTIVAS ATENDIDAS Y SERVICIOS TECNOLÓGICOS BRINDADOS (1) N° | N° | SERVICIOS TECNOLÓGICOS | Justificación UP Validadas | Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) preliminar | NO APLICA | NO APLICA</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">4.0</td>
+                <td>Servicio</td>
+                <td>2.2 Desarrollar prototipos con impresión 3D y modelado CAD | 15 UP desarrollan productos y modelado CAD. | unidad productiva | 1. Informe del servicio. 2. Conformidad del servicio o evidencia de entrega del servicio. | 15 | 0 | 8</td>
+              </tr>
+              <tr>
+                <td class="num">5.0</td>
+                <td>Servicio</td>
+                <td>3.1 Evaluar competencias laborales en diseño y procesos digitales | 6 UP que cuenten con 18 trabajadores cuyas competencias labores en diseño y procesos digitales han sido evaluadas | unidad productiva | 1. Informe final del servicio que incluyen los formatos establecidos por el MTPE. 2. Certificado de competencia laboral firmado por el director del CITE. | 6 | 1 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">6.0</td>
+                <td>Acción</td>
+                <td>4.1 Elaboración de compendio y taller de cierre. | Taller y compendio para dinamización de resultados del proyecto | Informe | Informe de taller y compendio finalizado | 1 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026) preliminar</td>
+                <td>NO APLICA | NO APLICA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr><td colspan="4">No registrado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">VI. | PLAN DE ADQUISICIONES Y CONTRATACIONES (PAC )</div>
+      </div>
+    </article>
+    <article class="project" id="project-3">
+      <h3>3. 1025-2026 - Unidad Técnica textil y confecciones Lima</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>Unidad Técnica textil y confecciones Lima</div>
+          <div class="field"><b>Título del proyecto</b>Fortalecimiento de la Competitividad de las MYPES del Sector Confecciones, a través de la Transformación Digital con Enfoque en Desarrollo de Producto y Gestión Comercial Tecnológica en la región de Lima</div>
+          <div class="field"><b>Código del proyecto</b>1025-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET2</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 300,000.00</div>
+          <div class="data-cell">S/ 75,000.00</div>
+          <div class="data-cell">S/ 375,000.00</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 109,175.00</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. | CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Acción</td>
+                <td>1.1 Identificar empresas con los requerimientos minimos necesarios para la implementación del plan de marketing digital</td>
+                <td>Lista empresas con requerimientos mínimos necesarios para la implementación de un Plan de marketing digital</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Acción</td>
+                <td>1.2 Capacitar al personal de la UT Textil y Confecciones en metolodologías de marketing digital, identidad digital y herramientas de Seguimiento de clientes para el sector confecciones.</td>
+                <td>Persona capacitada en la metodología para la implementación de planes de marketing digital y gestión de identidad digital. Persona capacitada en la herramienta de seguimiento y evaluacion de clientes digitales.</td>
+                <td class="num">2</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Servicio</td>
+                <td>1.3 Capacitar a Mypes en marketing digital y gestión de redes sociales para el sector textil y confecciones.</td>
+                <td>Empresas que recibieron los servicios de &quot;capacitación especializada&quot; en &quot;Marketing digital&quot; y &quot;Redes sociales&quot;</td>
+                <td class="num">60</td>
+                <td class="num">15</td>
+                <td class="num">19</td>
+                <td class="num">126.7%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Servicio</td>
+                <td>1.4 Brindar servicios de asistencia técnica en &quot;desarrollo e implementación de planes de marketing digital dirigidos a mypes del sector confecciones&quot;</td>
+                <td>Servicios de &quot;Asistencia Técnica Específica&quot; en &quot;desarrollo e implementación de planes de marketing digital dirigidos a mypes del sector confecciones&quot; a mypes del sector confecciones</td>
+                <td class="num">10</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Servicio</td>
+                <td>1.5 Brindar servicio de asistencia técnica en &quot;diseño, desarrollo e implementación de catálogos digitales&quot; , optimizado para la gestión eficiente de la información de producto (PIM) de Micro y Pequeñas Empresas (Mypes), con capacidad de integración multicanal y analítica de datos para la optimización de la experiencia del usuario y el incremento de la tasa de conversión comercial.</td>
+                <td>Servicios de &quot;Asistencia Técnica Específica&quot; en &quot;diseño, desarrollo e implementación de catálogos digitales&quot; a mypes del sector confecciones</td>
+                <td class="num">9</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Servicio</td>
+                <td>1.6 Brindar servicios de asistencia técnica para la gestión y configuración de perfiles en redes sociales enfocada en construir y proyectar la identidad digital de la empresa, asegurando que cada perfil refleje coherentemente la imagen, valores y objetivos del plan, y conecte eficazmente con el público objetivo</td>
+                <td>Servicios de &quot;Asistencia Técnica Específica&quot; en &quot;gestión y configuración de perfiles en redes sociales enfocada en construir y proyectar la identidad digital de la empresa&quot; a mypes del sector confecciones</td>
+                <td class="num">9</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>Servicio</td>
+                <td>1.7 Brindar servicios de asistencia técnica para la creación y puesta en marcha de páginas web, diseñando y desarrollando una página web funcional y atractiva que refleje la identidad digital de la organización. Se asegura su operatividad, usabilidad y presencia optimizada para buscadores, garantizando la experiencia del usuario. (Google sites)</td>
+                <td>Servicios de &quot;Asistencia Técnica Específica&quot; en &quot;creación y puesta en marcha de páginas web&quot; a mypes del sector confecciones</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">8</td>
+                <td>Servicio</td>
+                <td>1.8 Brindar servicios de asistencia técnica para la implementación de una herramienta de Seguimiento y evaluación de la clientes digitales, creando indicadores para medir el desempeño y alcance de la presencia digital de manera periódica.</td>
+                <td>Servicios de &quot;Asistencia Técnica Específica&quot; en &quot;implementación de una herramienta de Seguimiento y evaluación de la clientes digitales&quot; a mypes del sector confecciones</td>
+                <td class="num">2</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">9</td>
+                <td>Acción</td>
+                <td>2.1 Capacitar al personal de la UT Textil y confecciones en diseño gráfico con inteligencia artificial para la generación de servicios de diseño y desarrollo de producto</td>
+                <td>Persona capacitada en diseño gráfico con Inteligencia Artificial.</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">10</td>
+                <td>Servicio</td>
+                <td>2.2 Capacitar a mypes en el desarrollo de fichas tecnicas de producto y desarrollo de patrones digitales a traves de un software CAD/PDM</td>
+                <td>Empresas que recibieron el servicio de &quot;capacitación especializada&quot; en &quot;Fichas técnicas&quot; y &quot;Desarrollo de patrones digitales&quot;</td>
+                <td class="num">60</td>
+                <td class="num">15</td>
+                <td class="num">16</td>
+                <td class="num">106.7%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">11</td>
+                <td>Servicio</td>
+                <td>2.3 Brindar servicios de diseño y/o modelaje de producto en &quot;Desarrollo integral y puesta en marcha de fichas técnicas digitales para productos&quot;, abarcando su diseño, elaboración precisa y aplicación efectiva</td>
+                <td>Servicios de &quot;diseño y/o modelaje de producto&quot; en &quot;desarrollo integral y puesta en marcha de fichas técnicas digitales&quot;</td>
+                <td class="num">10</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">12</td>
+                <td>Servicio</td>
+                <td>2.4 Brindar servicios de asistencia técnica en &quot;Validación e Implementación de software CAD/PDM, instalando y configurando el software especializado de diseño asistido Audaces 360°&quot;</td>
+                <td>Servicios de &quot;asistencia técnica específica&quot; en &quot;Validación e Implementación de software CAD/PDM, instalando y configurando el software especializado de diseño asistido Audaces 360°&quot; a mypes del sector confecciones</td>
+                <td class="num">2</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">13</td>
+                <td>Servicio</td>
+                <td>2.5 Brindar servicios de diseño y/o modelaje de producto en &quot;Desarrollo de patrones digitales&quot;, proporcionando soporte especializado que guía a las MYPES en la adopción y mejora continua de tecnologías digitales.</td>
+                <td>Servicios de diseño y/o modelaje de producto en &quot;desarrollo de patrones digitales&quot;</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">14</td>
+                <td>Servicio</td>
+                <td>2.6 Brindar servicios de diseño y/o modelaje de producto en &quot;Digitalización de patrones fisicos a patrones digitales&quot;</td>
+                <td>Servicios de diseño y/o modelaje de producto en &quot;Digitalización de patrones fisicos a patrones digitales&quot;</td>
+                <td class="num">38</td>
+                <td class="num">8</td>
+                <td class="num">8</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. | UNIDADES PRODUCTIVAS ATENDIDAS Y SERVICIOS TECNOLÓGICOS BRINDADOS (1) N° | N° | SERVICIOS TECNOLÓGICOS | Justificación UP Validadas | Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) | NO APLICA | NO APLICA</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026)</td>
+                <td>NO APLICA | NO APLICA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr><td colspan="4">No registrado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">VI. | PLAN DE ADQUISICIONES Y CONTRATACIONES (PAC )</div>
+      </div>
+    </article>
+    <article class="project" id="project-4">
+      <h3>4. 0006-2026 - CITEcuero, Calzado, Textil, Confecciones e Industrias Conexas</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>CITEcuero, Calzado, Textil, Confecciones e Industrias Conexas</div>
+          <div class="field"><b>Título del proyecto</b>Fortalecimiento de la competitividad de las MYPES del sector cuero y calzado en Lima mediante la adopción de tecnologías y metodologías validadas en gestión comercial, ambiental y productiva</div>
+          <div class="field"><b>Código del proyecto</b>0006-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET2</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 300,000.00</div>
+          <div class="data-cell">S/ 75,000.00</div>
+          <div class="data-cell">S/ 375,000.00</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 89,665.00</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. | CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Acción</td>
+                <td>1.1 Identificar las herramientas tecnológicas digitales para la digitalización de procesos comerciales en las UP del sector calzado</td>
+                <td>3 herramientas tecnológica digital identificadas de gestión comercial</td>
+                <td class="num">3</td>
+                <td class="num">3</td>
+                <td class="num">3</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Acción</td>
+                <td>1.2 Diseñar los prototipos de un sistemas de gestión comercial para las UP del sector calzado</td>
+                <td>1 prototipo de sistema de gestión comercial diseñado</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Acción</td>
+                <td>1.3 Programar y validar la herramienta digital con base en el prototipo diseñado para la gestión comercial en las UP del sector calzado</td>
+                <td>1 herramienta digital con código fuente validada</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Servicio</td>
+                <td>1.4 Brindar el servicio de &quot;Asistencia técnica&quot; en la &quot;Adopción de Herramienta Digital en la gestión comercial&quot; con la herramienta digital diseñada a las UP que ya cuenta con una estrategia de marketing, registren ventas de un periodo mayor a 1 año, y requieran digitalizar sus procesos comerciales.</td>
+                <td>7 UP que reciben el servicio de &quot;Asistencia técnica&quot; en la &quot;Adopción de Herramienta Digital en la gestión comercial</td>
+                <td class="num">7</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Acción</td>
+                <td>1.5 Capacitar al personal del CITEccal en la programación de la herramienta digital para del e-commerce y punto de venta, para futuras ajustes o modificaciones</td>
+                <td>1 profesional del CITEccal capacitado en la administración, modificación y programación de la herramienta digital</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Servicio</td>
+                <td>1.6 Capacitar a las UP en las de &quot;Toma de decisiones y elaboración de estrategias comerciales a través de datos recopilados de un e-commerce y/o punto de venta&quot;</td>
+                <td>16 UP que reciben el servicio de &quot;Capacitación&quot; en &quot;Toma decisiones y elaboración de estrategias comerciales a través de datos recopilados de un e-commerce y/o punto de venta&quot;</td>
+                <td class="num">16</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>Servicio</td>
+                <td>1.7 Brindar el servicio de &quot;Asistencia técnica&quot; en la &quot;Elaboración de estrategias comerciales y toma de decisiones en base a indicadores&quot; a UP que cuenten con datos digitalizados en la gestión comercial</td>
+                <td>7 UP que reciben el servicios de &quot;Asistencia técnica&quot; en la &quot;Elaboración de estrategias comerciales y toma de decisiones en base a Indicadores</td>
+                <td class="num">7</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">8</td>
+                <td>Servicio</td>
+                <td>1.8 Brindar charlas técnicas a las UP sobre la &quot;Importancia de los datos para la toma de decisiones comerciales&quot;</td>
+                <td>15 UP que reciben el servicio de &quot;Charla técnica&quot; en &quot;Importancia de los datos para la toma de decisiones comerciales&quot;</td>
+                <td class="num">15</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">9</td>
+                <td>Servicio</td>
+                <td>2.1 Brindar el servicio de &quot;Asistencia técnica&quot; a las UP en la &quot;Implementación de medidas de ecoeficiencia energética&quot; establecidas por el MINAM</td>
+                <td>2 UP que reciben el servicio de &quot;Asistencia técnica&quot; en la &quot;Implementación de medidas de ecoeficiencia energética&quot;</td>
+                <td class="num">2</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">10</td>
+                <td>Servicio</td>
+                <td>2.2 Brindar el servicio de &quot;Asistencia técnica&quot; a las UP en la &quot;Implementación de medidas de ecoeficiencia en el uso del agua&quot; establecidas por el MINAM</td>
+                <td>2 UP que reciben el servicio de &quot;Asistencia técnica&quot; en la &quot;Implementación de medidas de ecoeficiencia en el uso del agua&quot;</td>
+                <td class="num">2</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">11</td>
+                <td>Servicio</td>
+                <td>2.3 Brindar el servicio de &quot;Asistencia técnica&quot; a las UP en la &quot;Implementación de programa de gestión de residuos sólidos con enfoque de economía circular&quot; establecidas por el MINAM</td>
+                <td>2 UP que reciben el servicio de &quot;Asistencia técnica&quot; en la &quot;Implementación de programa de gestión de residuos sólidos con enfoque de economía circular&quot;</td>
+                <td class="num">2</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">12</td>
+                <td>Servicio</td>
+                <td>2.4 Brindar el servicio de &quot;Asistencia técnica&quot; a las UP en la &quot;Implementación de reporte de sostenibilidad en base a indicadores&quot; establecidas por el MINCETUR</td>
+                <td>1 UP que recibe el servicio de &quot;Asistencia técnica&quot; en la &quot;Implementación de reporte de sostenibilidad en base a indicadores&quot;</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">13</td>
+                <td>Servicio</td>
+                <td>2.5 Capacitar a las UP en las &quot;Ventajas internacionales de aspectos ambientales y negocios sostenibles&quot;</td>
+                <td>15 UP que reciben el servicio de &quot;Capacitación&quot; en &quot;Ventajas internacionales de aspectos ambientales y negocios sostenibles&quot;</td>
+                <td class="num">15</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">14</td>
+                <td>Acción</td>
+                <td>3.1 Diseñar una metodología para brindar el servicio de &quot;Automatización del proceso de aparado con patroneras&quot;</td>
+                <td>1 metodología diseñada para el servicio de &quot;Automatización del proceso de aparado con patroneras&quot;</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">15</td>
+                <td>Servicio</td>
+                <td>3.2 Brindar charlas técnicas a las UP sobre la &quot;Reducción de costos y automatización del proceso de aparado&quot;</td>
+                <td>30 UP que reciben el servicio de &quot;Charla técnica&quot; en la &quot;Importancia de los datos para la toma de decisiones comerciales&quot;</td>
+                <td class="num">30</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">16</td>
+                <td>Servicio</td>
+                <td>3.3 Brindar el servicio de &quot;Diseño y/o desarrollo de productos&quot; en &quot;Digitalización de moldes&quot;</td>
+                <td>30 UP que reciben el servicio de &quot;Diseño y/o desarrollo de productos&quot; en &quot;Digitalización de moldes&quot;</td>
+                <td class="num">30</td>
+                <td class="num">2</td>
+                <td class="num">2</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">17</td>
+                <td>Servicio</td>
+                <td>3.4 Brindar el servicio de &quot;Diseño y/o desarrollo de productos&quot; en el &quot;Desarrollo de prototipos de aparado automatizado&quot; (Bastidores y 1-3 pares con costura automatizada de muestras)</td>
+                <td>30 UP que reciben el servicio de &quot;Diseño y/o desarrollo de productos&quot; en &quot;Desarrollo de prototipos de aparado automatizado&quot;</td>
+                <td class="num">30</td>
+                <td class="num">2</td>
+                <td class="num">2</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">18</td>
+                <td>Servicio</td>
+                <td>3.5 Brindar el servicio de &quot;Soporte productivo&quot; en &quot;Aparado automatizado&quot;</td>
+                <td>30 UP que reciben el servicio de &quot;Soporte productivo&quot; en &quot;Aparado automatizado&quot;</td>
+                <td class="num">30</td>
+                <td class="num">2</td>
+                <td class="num">2</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">19</td>
+                <td>Servicio</td>
+                <td>3.6 Brindar el servicio de &quot;Diseño y/o desarrollo de productos&quot; en el &quot;Corte de bastidores&quot;</td>
+                <td>10 UP que reciben el servicio de &quot;Diseño y/o desarrollo de productos&quot; en &quot;Corte de bastidores&quot;</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">20</td>
+                <td>Servicio</td>
+                <td>3.7 Brindar el servicio de &quot;Asistencia técnica&quot; en la &quot;Implementación del sistema de aparado automatizado&quot;</td>
+                <td>3 UP que reciben el servicio de &quot;Asistencia técnica&quot; en &quot;Implementación del sistema de aparado automatizado&quot;</td>
+                <td class="num">3</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. | UNIDADES PRODUCTIVAS ATENDIDAS Y SERVICIOS TECNOLÓGICOS BRINDADOS (1) N° | N° | SERVICIOS TECNOLÓGICOS | Justificación UP Validadas | Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) | NO APLICA | NO APLICA</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026)</td>
+                <td>NO APLICA | NO APLICA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr><td colspan="4">No registrado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">VI. | PLAN DE ADQUISICIONES Y CONTRATACIONES (PAC )</div>
+      </div>
+    </article>
+    <article class="project" id="project-5">
+      <h3>5. 0006-2026 - CITE Forestal Pucallpa 1052-2026</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>CITE Forestal Pucallpa 1052-2026</div>
+          <div class="field"><b>Título del proyecto</b>Mejora de la capacidad productiva de los centros de primera y segunda transformación de la madera mediante la integración de herramientas tecnológicas para la gestión de procesos y generación de valor agregado de productos terminados en el ámbito del CITEforestal Pucallpa</div>
+          <div class="field"><b>Código del proyecto</b>0006-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET2</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 300,000.00</div>
+          <div class="data-cell">S/ 75,000.00</div>
+          <div class="data-cell">S/ 375,000.00</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 21,631.39</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. | CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Acción</td>
+                <td>1.1. Asistencia técnica específica para la construcción e implementación de la hoja de ruta de intervención descentralizada con paquetes de servicios para las UP de 1era y 2da transformación</td>
+                <td>6 de productos terminados priorizados para desarrollo de servicios</td>
+                <td class="num">6</td>
+                <td class="num">6</td>
+                <td class="num">6</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Servicio</td>
+                <td>1.2. Asistencia técnica de programa para integrar funcionalmente la APP industria para la gestión y estandarización de procesos de CTP: Ingreso de madera, aserrío, secado, productos transformados, recuperación, despacho, logística y reportes</td>
+                <td>4 CTP con registros activos que integraron la App Industria en sus procesos productivos</td>
+                <td class="num">4</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Servicio</td>
+                <td>1.3. Asistencia técnica de programa para integrar funcionalmente la APP industria para la gestión y estandarización de procesos de CTS : Órdenes de pedido, habilitación, maquinado, ensamble, acabado</td>
+                <td>4 CTS con registros activos que integraron la App Industria en sus procesos productivos</td>
+                <td class="num">4</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Servicio</td>
+                <td>1.4. Desarrollar servicios de diseño y desarrollo de productos terminados priorizados en CTS</td>
+                <td>12 servicios ejecutados en 3 UP</td>
+                <td class="num">12</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Acción</td>
+                <td>2.1. Implementar la norma ISO/IEC 17025 para la acreditación de los métodos de ensayo del laboratorio de acabados y productos terminados</td>
+                <td>N° de Protocolos de métodos de ensayos implementados</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Acción</td>
+                <td>2.2. Acreditar los métodos de ensayo del laboratorio de acabados y productos terminados</td>
+                <td>Procesos de acreditación de métodos de ensayo de laboratorio de acabados y productos terminados concluidos</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>Servicio</td>
+                <td>2.3. Ensayos de laboratorio para evaluar la calidad y funcionalidad de los productos terminados resultantes de los paquetes de intervención</td>
+                <td>N° de productos terminados priorizados que fueron evaluados</td>
+                <td class="num">6</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">8</td>
+                <td>Servicio</td>
+                <td>2.4. Difusión de información tecnológica especializada para posicionar la herramienta tecnológica en las UP del sector forestal</td>
+                <td>N° de UP que recibieron información sobre resultados de integración de la App Industria mediante eventos de promoción y difusión</td>
+                <td class="num">60</td>
+                <td class="num">30</td>
+                <td class="num">30</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. | UNIDADES PRODUCTIVAS ATENDIDAS Y SERVICIOS TECNOLÓGICOS BRINDADOS (1) N° | N° | SERVICIOS TECNOLÓGICOS | Justificación UP Validadas | Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) | NO APLICA | NO APLICA</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026)</td>
+                <td>NO APLICA | NO APLICA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr><td colspan="4">No registrado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">VI. | PLAN DE ADQUISICIONES Y CONTRATACIONES (PAC )</div>
+      </div>
+    </article>
+    <article class="project" id="project-6">
+      <h3>6. 1053-2026 - CITE Textil Camélidos Puno</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>CITE Textil Camélidos Puno</div>
+          <div class="field"><b>Título del proyecto</b>Fortalecimiento de desarrollo de capacidades competitividad en la cadena productiva de fibra de vicuña a medida en la región Puno</div>
+          <div class="field"><b>Código del proyecto</b>1053-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET1</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 296,641.12</div>
+          <div class="data-cell">S/ 74,190.00</div>
+          <div class="data-cell">S/ 370,831.12</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 217,441.56</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. | CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Servicio</td>
+                <td>1.1. Brindar servicios de capacitación especializada en buenas prácticas de esquila</td>
+                <td>10 UP fortalecidas a través de 30 promotores capacitados en Buenas Prácticas de Esquila</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Servicio</td>
+                <td>1.2. Brindar servicios de capacitacion especializada en predeserdado y deserdado de la fibra de vicuña</td>
+                <td>10 UP fortalecidas a través de 60 promotoras (mujeres) capacitadas en proceso de predeserdado y deserdado de la fibra de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Servicio</td>
+                <td>1.3 Brindar servicios de capacitación especializada en cardado artesanal</td>
+                <td>10 UP fortalecidas a través de 20 promotores capacitados en proceso de cardado artesanal de la fibra de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Servicio</td>
+                <td>1.4 Brindar servicios de capacitación especializada en lavado artesanal</td>
+                <td>10 UP fortalecidas a través de 20 productores capacitados en proceso de lavado artesanal</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Servicio</td>
+                <td>1.5 Brindar servicios de capacitación especializada en hilado artesanal</td>
+                <td>10 UP fortalecidas a través de 50 promotoras (mujeres) capacitadas en el proceso de hilado artesanal</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Servicio</td>
+                <td>1.6 Brindar servicios de capacitación especializada en tejido a punto a mano y/o tejido a telar</td>
+                <td>10 UP fortalecidas a través de 50 promotoras (mujeres) capacitadas en el proceso de tejido a punto a mano y/o tejido a telar</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>Servicio</td>
+                <td>2.1 Brindar servicios de capacitación a medida en buenas practicas de esquila en la fibra de vicuña</td>
+                <td>10 UP reciben el servicio de capacitación a medida en buenas prácticas de esquila de la fibra de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">8</td>
+                <td>Servicio</td>
+                <td>2.2. Brindar servicios de capacitación a medida predeserdado y deserdado de la fibra de vicuña</td>
+                <td>10 UP reciben el servicio de capacitación a medida en proceso de predeserdado y deserdado de la fibra de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">5</td>
+                <td class="num">50.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">9</td>
+                <td>Servicio</td>
+                <td>2.3 Brindar servicios de capacitación a medida en cardado artesanal</td>
+                <td>10 UP reciben el servicio de capacitación a medida en el proceso de cardado artesanal</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">10</td>
+                <td>Servicio</td>
+                <td>2.4 Brindar servicios de capacitación a medida en lavado artesanal</td>
+                <td>10 UP reciben el servicio de capacitación a medida en el proceso de lavado artesanal de la fibra de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">11</td>
+                <td>Servicio</td>
+                <td>2.5 Brindar servicios de capacitación a medida en hilado artesanal</td>
+                <td>10 UP reciben el servicio de capacitación a medida en el proceso de hilado artesanal de la fibra de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">12</td>
+                <td>Servicio</td>
+                <td>2.6 Brindar servicios de capacitación a medida en Tejido a punto a mano y/o Tejido a telar</td>
+                <td>10 UP reciben el servicio de capacitación a medida en el proceso de tejido a punto a mano y/o tejido a telar de la fibra de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">13</td>
+                <td>Servicio</td>
+                <td>3.1 Brindar servicios de capacitación a medida en sistema de trazabilidad</td>
+                <td>10 UP reciben el servicio de proceso de trazabilidad de la fibra de vicuña hasta el producto textil elaborado</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">14</td>
+                <td>Servicio</td>
+                <td>3.2 Brindar servicios de capacitación especializada en el diseño y elaboración de productos de vicuña con valor agregado</td>
+                <td>10 UP reciben el servicio de capacitación especializada en el diseño y elaboración de productos de vicuña con valor agregado</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">15</td>
+                <td>Servicio</td>
+                <td>4.1 Brindar servicios de capacitación a medida en la constitución y formalización de una organización de carácter empresarial</td>
+                <td>10 UP reciben el servicio de capacitación a medida en la constitución y formalización de una organización de carácter empresarial</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">10</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">16</td>
+                <td>Servicio</td>
+                <td>4.2 Brindar servicios de capacitación a medida en la creación de una tienda virtual de productos de vicuña</td>
+                <td>01 organización de carácter empresarial recibirá el servicio de capacitación a medida en la creación de una tienda virtual para la promoción de productos de vicuña</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. | UNIDADES PRODUCTIVAS ATENDIDAS Y SERVICIOS TECNOLÓGICOS BRINDADOS (1) N° | N° | SERVICIOS TECNOLÓGICOS | Justificación UP Validadas | Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) | NO APLICA | NO APLICA</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026)</td>
+                <td>NO APLICA | NO APLICA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr><td colspan="4">No registrado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">VI. | PLAN DE ADQUISICIONES Y CONTRATACIONES (PAC )</div>
+      </div>
+    </article>
+    <article class="project" id="project-7">
+      <h3>7. 1025-2026 - CITE Textil Camélidos Cusco</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>CITE Textil Camélidos Cusco</div>
+          <div class="field"><b>Título del proyecto</b>Fortalecimiento de las capacidades productivas, de digitalización y exportación de las unidades productivas del sector textil camélidos mediante el programa &quot;Artesano digital exportador&quot; en el departamento de Cusco</div>
+          <div class="field"><b>Código del proyecto</b>1025-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET2</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 300,000.00</div>
+          <div class="data-cell">S/ 75,000.00</div>
+          <div class="data-cell">S/ 375,000.00</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 95,775.00</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. | CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Servicio</td>
+                <td>1.1 Brindar asistencia técnica específica en medición de competitividad a través del índice de competitividad.</td>
+                <td>100 UP cuentan con un Índice de competitividad al inicio del proyecto.</td>
+                <td class="num">100</td>
+                <td class="num">65</td>
+                <td class="num">97</td>
+                <td class="num">149.2%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Servicio</td>
+                <td>2.1 Brindar asistencia técnica específica en gestión tecnológica empresarial.</td>
+                <td>54 unidades productivas fortalecidas mediante asistencias técnicas que cuentan con modelos de negocio ecocircular, flujo de procesos, estructura de costos y otros.</td>
+                <td class="num">54</td>
+                <td class="num">18</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Servicio</td>
+                <td>3.1 Brindar asistencia técnica específica y diseño y desarrollo de productos.</td>
+                <td>54 UPs que cuentan con procesos mejorados para mejorar su producción N° UPs que cuentan con 2 propuestas con diseños y desarrollos de productos innovadores aplicando la herramienta de ecodiseño</td>
+                <td class="num">54</td>
+                <td class="num">18</td>
+                <td class="num">4</td>
+                <td class="num">22.2%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Servicio</td>
+                <td>3.2 Brindar asistencia técnica específica y diseño y desarrollo de productos textiles en máquina galga.</td>
+                <td>54 UPs que mejoran sus habilidades técnicas en el uso y manejo de máquinas galgas para el desarrollo de productos textiles N° UPs que cuentan cada una con 2 propuestas de productos textiles innovadores en máquina galga</td>
+                <td class="num">54</td>
+                <td class="num">18</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Servicio</td>
+                <td>3.3 Brindar diseño y desarrollo de propuestas innovadoras de productos textiles.</td>
+                <td>27 UPs que cuentan cada una con 2 diseños de propuestas innovadoras textiles</td>
+                <td class="num">27</td>
+                <td class="num">6</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Servicio</td>
+                <td>3.4 Brindar servicios de asistencia técnica específica en tinturación y acabados húmedos.</td>
+                <td>27 UPs que reciben servicios de asistencia técnica en tinturación y acabados húmedos</td>
+                <td class="num">27</td>
+                <td class="num">6</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>Servicio</td>
+                <td>3.5 Brindar soporte productivo en teñido de hilos/fibra.</td>
+                <td>27 UPs que cuentan con productos textiles tinturados</td>
+                <td class="num">27</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">8</td>
+                <td>Servicio</td>
+                <td>3.6 Brindar soporte productivo en acabado de productos textiles.</td>
+                <td>27 UPs que reciban servicios de soporte productivo en procesos húmedos</td>
+                <td class="num">27</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">9</td>
+                <td>Servicio</td>
+                <td>3.7 Realizar servicios de ensayos de laboratorio en control de calidad de productos y procesos.</td>
+                <td>5 UPs que reciban 10 ensayos cada una de finura, torsión, titulación, solidez al color y/o otros</td>
+                <td class="num">5</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">10</td>
+                <td>Servicio</td>
+                <td>4.1 Brindar asistencia técnica en marketing digital, atención al cliente y generación de contenido.</td>
+                <td>27 UPs que reciban documento con la estrategia de marca, plan de marketing digital y/o para canales de comunicación comercial.</td>
+                <td class="num">27</td>
+                <td class="num">6</td>
+                <td class="num">2</td>
+                <td class="num">33.3%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">11</td>
+                <td>Servicio</td>
+                <td>4.2 Brindar asistencia técnica específica en herramientas digitales y tecnología.</td>
+                <td>27 UPs que cuenten con herramientas digitales y tecnología.</td>
+                <td class="num">27</td>
+                <td class="num">6</td>
+                <td class="num">0</td>
+                <td class="num">0.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">12</td>
+                <td>Servicio</td>
+                <td>4.3 Brindar asistencia técnica específica en diseño de envases y empaques.</td>
+                <td>27 UPs que cuenten con empaques desarrollados bajo el concepto de ecodiseño.</td>
+                <td class="num">27</td>
+                <td class="num">6</td>
+                <td class="num">6</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">13</td>
+                <td>Servicio</td>
+                <td>5.1 Brindar asistencia técnica específica en comercio internacional.</td>
+                <td>18 UPs que cuenten con planes de comercio internacional</td>
+                <td class="num">18</td>
+                <td class="num">6</td>
+                <td class="num">2</td>
+                <td class="num">33.3%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">14</td>
+                <td>Acción</td>
+                <td>6.1 Realizar un evento de difusión inicial del proyecto.</td>
+                <td>Un evento de difusión para captar posibles unidades productivas para formar parte del proyecto</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">1</td>
+                <td class="num">100.0%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">15</td>
+                <td>Acción</td>
+                <td>6.2 Realizar un evento de difusión de resultados.</td>
+                <td>Un evento de difusión de resultados realizado al finalizar el proyecto.</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. | UNIDADES PRODUCTIVAS ATENDIDAS Y SERVICIOS TECNOLÓGICOS BRINDADOS (1) N° | N° | SERVICIOS TECNOLÓGICOS | Justificación UP Validadas | Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) | NO APLICA | NO APLICA</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1025-2026</td>
+                <td>PET2</td>
+                <td>300000.0 | 75000.0 | 375000.0</td>
+              </tr>
+              <tr>
+                <td class="num">dd/mm/aaaa</td>
+                <td>1.0</td>
+                <td>222.0 | 95775.0 | Del: 19/03/2026 | Al: 19/06/2026</td>
+              </tr>
+              <tr>
+                <td class="num">1.0</td>
+                <td>Servicio</td>
+                <td>1.1 Brindar asistencia técnica específica en medición de competitividad a través del índice de competitividad. | 100 UP cuentan con un Índice de competitividad al inicio del proyecto. | Unidad Productiva | Informe de asistencia técnica específica. Conformidad del servicio. Propuesta técnica y económica | 100 | 65 | 97 | 1.492307692</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>Servicio</td>
+                <td>2.1 Brindar asistencia técnica específica en gestión tecnológica empresarial. | 54 unidades productivas fortalecidas mediante asistencias técnicas que cuentan con modelos de negocio ecocircular, flujo de procesos, estructura de costos y otros. | Unidad Productiva | Informes de asistencia técnica específica por temática abordada. Fichas de validación técnica/conformidad por temática abordada. Fichas especializadas por temática abordada. Conformidad del servicio. | 54 | 18 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>Servicio</td>
+                <td>3.1 Brindar asistencia técnica específica y diseño y desarrollo de productos. | 54 UPs que cuentan con procesos mejorados para mejorar su producción N° UPs que cuentan con 2 propuestas con diseños y desarrollos de productos innovadores aplicando la herramienta de ecodiseño | Unidad Productiva | Informe de asistencia técnica específica. Informe de diseño y patronaje. Conformidad del servicio. Propuesta técnica y económica. | 54 | 18 | 4 | 0.2222222222</td>
+              </tr>
+              <tr>
+                <td class="num">4.0</td>
+                <td>Servicio</td>
+                <td>3.2 Brindar asistencia técnica específica y diseño y desarrollo de productos textiles en máquina galga. | 54 UPs que mejoran sus habilidades técnicas en el uso y manejo de máquinas galgas para el desarrollo de productos textiles N° UPs que cuentan cada una con 2 propuestas de productos textiles innovadores en máquina galga | Unidad Productiva | Informe de asistencia técnica específica. Informe de diseño y desarrollo de productos. Conformidad del servicio. Propuesta técnica y económica | 54 | 18 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">5.0</td>
+                <td>Servicio</td>
+                <td>3.3 Brindar diseño y desarrollo de propuestas innovadoras de productos textiles. | 27 UPs que cuentan cada una con 2 diseños de propuestas innovadoras textiles | Unidad Productiva | Informe de diseño y desarrollo de productos. Conformidad del servicio. Propuesta técnica y económica | 27 | 6 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">6.0</td>
+                <td>Servicio</td>
+                <td>3.4 Brindar servicios de asistencia técnica específica en tinturación y acabados húmedos. | 27 UPs que reciben servicios de asistencia técnica en tinturación y acabados húmedos | Unidad Productiva | Informes de asistencia técnica específica. Conformidad del servicio. Propuesta técnica y económica | 27 | 6 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">7.0</td>
+                <td>Servicio</td>
+                <td>3.5 Brindar soporte productivo en teñido de hilos/fibra. | 27 UPs que cuentan con productos textiles tinturados | Unidad Productiva | Informes de soporte productivo. Conformidad del servicio. Propuesta técnica y económica. | 27 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">8.0</td>
+                <td>Servicio</td>
+                <td>3.6 Brindar soporte productivo en acabado de productos textiles. | 27 UPs que reciban servicios de soporte productivo en procesos húmedos | Unidad Productiva | Informes de soporte productivo. Conformidad del servicio. Propuesta técnica y económica. | 27 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">9.0</td>
+                <td>Servicio</td>
+                <td>3.7 Realizar servicios de ensayos de laboratorio en control de calidad de productos y procesos. | 5 UPs que reciban 10 ensayos cada una de finura, torsión, titulación, solidez al color y/o otros | Unidad Productiva | Informe de análisis de ensayo de laboratorio. Propuesta técnica y económica. | 5 | 1 | 1 | 1</td>
+              </tr>
+              <tr>
+                <td class="num">10.0</td>
+                <td>Servicio</td>
+                <td>4.1 Brindar asistencia técnica en marketing digital, atención al cliente y generación de contenido. | 27 UPs que reciban documento con la estrategia de marca, plan de marketing digital y/o para canales de comunicación comercial. | Unidad Productiva | Informe de la asistencia técnica específica. Conformidad del servicio. Propuesta técnica y económica. | 27 | 6 | 2 | 0.3333333333</td>
+              </tr>
+              <tr>
+                <td class="num">11.0</td>
+                <td>Servicio</td>
+                <td>4.2 Brindar asistencia técnica específica en herramientas digitales y tecnología. | 27 UPs que cuenten con herramientas digitales y tecnología. | Unidad Productiva | Informe de la asistencia técnica específica. Conformidad del servicio. Propuesta técnica y económica. | 27 | 6 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">12.0</td>
+                <td>Servicio</td>
+                <td>4.3 Brindar asistencia técnica específica en diseño de envases y empaques. | 27 UPs que cuenten con empaques desarrollados bajo el concepto de ecodiseño. | Unidad Productiva | Informes de diseño de empaque. Conformidad del servicio. Propuesta técnica y económica | 27 | 6 | 6 | 1</td>
+              </tr>
+              <tr>
+                <td class="num">13.0</td>
+                <td>Servicio</td>
+                <td>5.1 Brindar asistencia técnica específica en comercio internacional. | 18 UPs que cuenten con planes de comercio internacional | Unidad Productiva | Informe de la asistencia técnica específica. Conformidad del servicio. Propuesta técnica y económica. | 18 | 6 | 2 | 0.3333333333</td>
+              </tr>
+              <tr>
+                <td class="num">14.0</td>
+                <td>Acción</td>
+                <td>6.1 Realizar un evento de difusión inicial del proyecto. | Un evento de difusión para captar posibles unidades productivas para formar parte del proyecto | Evento | Informe del servicio que contiene temario, evidencia de convocatoria (flyer u otros) y lista de asistentes. | 1 | 1 | 1 | 1</td>
+              </tr>
+              <tr>
+                <td class="num">15.0</td>
+                <td>Acción</td>
+                <td>6.2 Realizar un evento de difusión de resultados. | Un evento de difusión de resultados realizado al finalizar el proyecto. | Evento | Informe del servicio que contiene temario, evidencia de convocatoria (flyer u otros) y lista de asistentes. | 1 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026)</td>
+                <td>NO APLICA | NO APLICA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr><td colspan="4">No registrado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">VI. | PLAN DE ADQUISICIONES Y CONTRATACIONES (PAC )</div>
+      </div>
+    </article>
+    <article class="project" id="project-8">
+      <h3>8. 1054-2026 - CITEagroindustrial Ica</h3>
+      <div class="project-body">
+        <h4>I. Datos del proyecto</h4>
+        <div class="two-col">
+          <div class="field"><b>CITE/UT ejecutor</b>CITEagroindustrial Ica</div>
+          <div class="field"><b>Título del proyecto</b>Desarrollo y validación de metodologías HPLC/UHPLC para la cuantificación de aminoácidos y vitaminas en alimentos, orientadas a impulsar la productividad y la innovación en beneficio de las unidades productivas del sector agroindustrial</div>
+          <div class="field"><b>Código del proyecto</b>1054-2026</div>
+          <div class="field"><b>Componente, línea/etapa</b>PET</div>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell data-label">Subvención total (S/)</div>
+          <div class="data-cell data-label">Contrapartida total (S/)</div>
+          <div class="data-cell data-label">Presupuesto total (S/)</div>
+          <div class="data-cell">S/ 2.00</div>
+          <div class="data-cell">S/ 297,649.83</div>
+          <div class="data-cell">S/ 100,000.26</div>
+          <div class="data-cell data-label">Monto desembolso (S/)</div>
+          <div class="data-cell data-label" style="grid-column: span 2;">Período evaluado</div>
+          <div class="data-cell">S/ 223,104.83</div>
+          <div class="data-cell">Del: 19/03/2026</div>
+          <div class="data-cell">Al: 19/06/2026</div>
+        </div>
+
+        <h4>II. Resumen ejecutivo</h4>
+        <div class="note">III. CUMPLIMIENTO DEL HITO</div>
+
+        <h4>III. Cumplimiento del hito</h4>
+        <h4>3.1 Avance de actividades y metas físicas</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Actividad / servicio</th><th>Indicador</th><th>Meta</th><th>Programado</th><th>Ejecutado</th><th>% avance</th><th>Justificación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>Acción</td>
+                <td>1.1 Desarrollar y seleccionar metodologías HPLC/UHPLC aplicables a alimentos de las UP, incluyendo la adquisición de estándares de referencia y reactivos certificados para aminoácidos y vitaminas.</td>
+                <td>8 metodologías HPLC/UHPLC desarrolladas para aminoácidos y vitaminas en alimentos de las UP</td>
+                <td class="num">8</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>Acción</td>
+                <td>1.2 Optimizar las condiciones cromatográficas de las metodologías HPLC/UHPLC para su aplicación en matrices alimentarias representativas de las UP</td>
+                <td>8 metodologías HPLC/UHPLC con condiciones cromatográficas optimizadas para matrices alimentarias de las UP</td>
+                <td class="num">8</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>Acción</td>
+                <td>1.3 Validar las metodologías HPLC/UHPLC en matrices alimentarias de las UP conforme a parámetros internacionales (linealidad, exactitud, precisión y robustez)</td>
+                <td>8 metodologías HPLC/UHPLC validadas en matrices alimentarias de las UP conforme a parámetros internacionales</td>
+                <td class="num">8</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>Acción</td>
+                <td>1.4 Documentar y aprobar técnicamente las metodologías validadas para su uso en la prestación de servicios analíticos a las UP</td>
+                <td>8 Protocolos de análisis aprobados y disponibles para atención a UP</td>
+                <td class="num">8</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>Acción</td>
+                <td>2.1 Sistematizar las metodologías HPLC/UHPLC validadas para su aplicación en servicios dirigidos a las UP</td>
+                <td>1 metodología HPLC/UHPLC validadas que cuentan con documentación técnica aprobada para la prestación de servicios analíticos a las UP</td>
+                <td class="num">1</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>Acción</td>
+                <td>2.2 Elaborar manuales técnicos y guías prácticas para la aplicación de las metodologías en alimentos de las UP</td>
+                <td>2 manuales técnicos y guías prácticas elaboradas para la aplicación de metodologías analíticas en alimentos de las UP</td>
+                <td class="num">2</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>Acción</td>
+                <td>2.3 Brindar capacitación especializada al personal técnico del CITE en metodologías HPLC/UHPLC validadas, enfocada en la operación instrumental, análisis e interpretación cromatográfica, para su posterior transferencia técnica a las UP</td>
+                <td>12 profesionales del CITE capacitados en operación, análisis e interpretación cromatográfica de metodologías HPLC/UHPLC validadas</td>
+                <td class="num">12</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">8</td>
+                <td>Servicio</td>
+                <td>2.4 Brindar charlas técnicas a las UP sobre los beneficios de los análisis (aminoácidos y vitaminas) en HPLC/UHPLC</td>
+                <td>24 UP que reciben charlas técnicas</td>
+                <td class="num">24</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">9</td>
+                <td>Servicio</td>
+                <td>3.1 Capacitar a las UP objetivo en el conocimiento y aplicación del proceso de servicios analíticos especializados para la cuantificación de aminoácidos esenciales y vitaminas</td>
+                <td>10 UP capacitados (30 participantes) en la aplicación de metodologías analíticas para el control de la calidad de alimentos</td>
+                <td class="num">30</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="num">10</td>
+                <td>Servicio</td>
+                <td>3.2 Realizar ensayos de laboratorio para la cuantificación de aminoácidos y vitaminas en alimentos de las UP, aplicando metodologías HPLC/UHPLC validadas</td>
+                <td>10 UP con ensayos de laboratorio ejecutados</td>
+                <td class="num">10</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">-</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3.2 Resultados, barreras y riesgos</h4>
+        <div class="note">IV. SERVICIOS BRINDADOS Y UNIDADES PRODUCTIVAS ATENDIDAS ITEM | Periodos del RSM | UP ATENDIDAS | SERVICIOS TECNOLÓGICOS Reportados | Rechazados | Validados 1.0 | RSM.1 (del 19.03.2026 al 30.04.2026) | 0.0 2.0 | RSM.2 (del 1.05.2026 al 31.05.2026) | 0.0 3.0 | RSM.3 (del 1.06.2026 al 19.06.2026) preliminar | 0.0</div>
+
+        <h4>IV. Unidades productivas atendidas y servicios tecnológicos brindados</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Período RSM</th><th>Valores reportados / rechazados / validados / otros</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="num">1054-2026</td>
+                <td>PET</td>
+                <td>2 | 297649.83 | 100000.26 | 397650.09</td>
+              </tr>
+              <tr>
+                <td class="num">dd/mm/aaaa</td>
+                <td>1.0</td>
+                <td>212.0 | 223104.83 | Del: 19/03/2026 | Al: 19/06/2026</td>
+              </tr>
+              <tr>
+                <td class="num">1.0</td>
+                <td>Acción</td>
+                <td>1.1 Desarrollar y seleccionar metodologías HPLC/UHPLC aplicables a alimentos de las UP, incluyendo la adquisición de estándares de referencia y reactivos certificados para aminoácidos y vitaminas. | 8 metodologías HPLC/UHPLC desarrolladas para aminoácidos y vitaminas en alimentos de las UP | Metodologías desarrolladas | 08 Informes técnico de desarrollo y selección de las metodologías HPLC/UHPLC ,UHPLC, que incluyan condiciones cromatográficas, analitos evaluados y matrices alimentarias. Protocolos preliminares de metodologías HPLC/UHPLC desarrolladas, archivadas y codificadas por el CITE. Órdenes de compra, fichas técnicas y certificados de estándares de referencia y reactivos adquiridos. | 8 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>Acción</td>
+                <td>1.2 Optimizar las condiciones cromatográficas de las metodologías HPLC/UHPLC para su aplicación en matrices alimentarias representativas de las UP | 8 metodologías HPLC/UHPLC con condiciones cromatográficas optimizadas para matrices alimentarias de las UP | Metodologías optimizadas | 08 Informes técnicos de optimización cromatográfica, que incluyan ajustes de fase móvil, gradiente, flujo, columna, tiempo de retención y resolución para cada metodología. Registros cromatográficos (cromatogramas). Protocolos metodológicos optimizados. | 8 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>Acción</td>
+                <td>1.3 Validar las metodologías HPLC/UHPLC en matrices alimentarias de las UP conforme a parámetros internacionales (linealidad, exactitud, precisión y robustez) | 8 metodologías HPLC/UHPLC validadas en matrices alimentarias de las UP conforme a parámetros internacionales | Metodologías validadas | Informe técnico de validación de metodologías HPLC/UHPLC por matriz alimentaria. Registro de conformidad del servicio o evidencia de entrega a la Unidad Productiva. | 8 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">4.0</td>
+                <td>Acción</td>
+                <td>1.4 Documentar y aprobar técnicamente las metodologías validadas para su uso en la prestación de servicios analíticos a las UP | 8 Protocolos de análisis aprobados y disponibles para atención a UP | Protocolos aprobados | 08 Protocolos de análisis HPLC/UHPLC aprobados, debidamente codificados y firmados por la instancia técnica responsable del CITE Agroindustrial Ica. | 8 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">5.0</td>
+                <td>Acción</td>
+                <td>2.1 Sistematizar las metodologías HPLC/UHPLC validadas para su aplicación en servicios dirigidos a las UP | 1 metodología HPLC/UHPLC validadas que cuentan con documentación técnica aprobada para la prestación de servicios analíticos a las UP | Metodología documentada y aprobada | 01 Manual o protocolo técnico consolidado de metodologías HPLC/UHPLC, aprobado institucionalmente para la prestación de servicios analíticos a las UP. | 1 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">7.0</td>
+                <td>Acción</td>
+                <td>2.3 Brindar capacitación especializada al personal técnico del CITE en metodologías HPLC/UHPLC validadas, enfocada en la operación instrumental, análisis e interpretación cromatográfica, para su posterior transferencia técnica a las UP | 12 profesionales del CITE capacitados en operación, análisis e interpretación cromatográfica de metodologías HPLC/UHPLC validadas | Profesionales CITE | Programa y material técnico de capacitación especializada. Listas de asistencia y registros de participación Certificados o constancias de participación. Sistematización de los resultados de las pruebas de entrada y salida | 12 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">8.0</td>
+                <td>Servicio</td>
+                <td>2.4 Brindar charlas técnicas a las UP sobre los beneficios de los análisis (aminoácidos y vitaminas) en HPLC/UHPLC | 24 UP que reciben charlas técnicas | Unidades productivas | 01 Informe del servicio de charla técnica a 24 UP&#x27;s, sobre los beneficios de los análisis (aminoácidos y vitaminas) en HPLC/UHPLC, debe anexar como mínimo: -Temario. -Evidencia de la convocatoria (flyer u otros). -Lista de asistencia por día. | 24 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">9.0</td>
+                <td>Servicio</td>
+                <td>3.1 Capacitar a las UP objetivo en el conocimiento y aplicación del proceso de servicios analíticos especializados para la cuantificación de aminoácidos esenciales y vitaminas | 10 UP capacitados (30 participantes) en la aplicación de metodologías analíticas para el control de la calidad de alimentos | Participantes capacitados | 01 Informe del servicio de capacitación a 10 UP&#x27;s en la aplicación de metodologías analíticas para el control de la calidad de alimentos. Debe anexar como mínimo: -Temario. -Evidencia de convocatoria (flyer u otros). -Lista de asistentes por día. -Sistematización de los resultados de las pruebas de entrada y salida. | 30 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">10.0</td>
+                <td>Servicio</td>
+                <td>3.2 Realizar ensayos de laboratorio para la cuantificación de aminoácidos y vitaminas en alimentos de las UP, aplicando metodologías HPLC/UHPLC validadas | 10 UP con ensayos de laboratorio ejecutados | Unidades productivas | Informes de resultados de ensayos realizados a 10 UP&#x27;s. Registros cromatográficos. Órdenes de servicio o registros de ingreso de muestras. Registros del laboratorio. Base de datos de resultados analíticos. | 10 | 0 | 0</td>
+              </tr>
+              <tr>
+                <td class="num">1.0</td>
+                <td>RSM.1 (del 19.03.2026 al 30.04.2026)</td>
+                <td>0.0</td>
+              </tr>
+              <tr>
+                <td class="num">2.0</td>
+                <td>RSM.2 (del 1.05.2026 al 31.05.2026)</td>
+                <td>0.0</td>
+              </tr>
+              <tr>
+                <td class="num">3.0</td>
+                <td>RSM.3 (del 1.06.2026 al 19.06.2026) preliminar</td>
+                <td>0.0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>V. Sección financiera</h4>
+        <h4>5.1 Ejecución presupuestal del hito</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Partida / actividad</th><th>Programado</th><th>Ejecutado</th><th>% avance</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Recursos humanos</td>
+                <td class="num">S/ 15,500.00</td>
+                <td class="num">S/ 15,500.00</td>
+                <td class="num">74.7%</td>
+              </tr>
+              <tr>
+                <td>Servicios de terceros</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Consultorías</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Materiales e insumos</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 1,400.00</td>
+                <td class="num">1.2%</td>
+              </tr>
+              <tr>
+                <td>Inversiones en equipos y bienes duraderos</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Gastos de gestión</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Gastos de contingencia</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>TOTAL</td>
+                <td class="num">S/ 15,500.00</td>
+                <td class="num">S/ 16,900.00</td>
+                <td class="num">6.9%</td>
+              </tr>
+              <tr>
+                <td>Actividad 1</td>
+                <td class="num">S/ 3,500.00</td>
+                <td class="num">S/ 4,900.00</td>
+                <td class="num">7.8%</td>
+              </tr>
+              <tr>
+                <td>Actividad 2</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 3</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 4</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 5</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 6</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 7</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 8</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 9</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Actividad 10</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>Componente de gestión</td>
+                <td class="num">S/ 12,000.00</td>
+                <td class="num">S/ 12,000.00</td>
+                <td class="num">92.6%</td>
+              </tr>
+              <tr>
+                <td>Gastos de contingencia</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">S/ 0.00</td>
+                <td class="num">0.0%</td>
+              </tr>
+              <tr>
+                <td>TOTAL</td>
+                <td class="num">S/ 15,500.00</td>
+                <td class="num">S/ 16,900.00</td>
+                <td class="num">6.9%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>5.2 Análisis de desviaciones</h4>
+        <div class="note">No registrado</div>
+      </div>
+    </article>
+    <section>
+      <h2>Archivos excluidos</h2>
+      <div class="table-wrap"><table><thead><tr><th>Archivo</th><th>Motivo</th></tr></thead><tbody>
+        <tr><td>ISM-FEST_1045-2026_ CITE PAA Piura.xlsx</td><td>No contiene la pestaña 5. ITF</td></tr>
+      </tbody></table></div></section>
+  </main>
+  <script>
+    const projectButtons = document.querySelectorAll("[data-target]");
+    const projectArticles = document.querySelectorAll("article.project");
+    const showAll = document.getElementById("showAllProjects");
+
+    function showProject(targetId, shouldScroll = true) {
+      projectArticles.forEach(article => {
+        article.classList.toggle("hidden", article.id !== targetId);
+      });
+      const selected = document.getElementById(targetId);
+      if (selected && shouldScroll) {
+        selected.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    projectButtons.forEach(button => {
+      button.addEventListener("click", () => showProject(button.dataset.target));
+    });
+
+    showAll.addEventListener("click", () => {
+      projectArticles.forEach(article => article.classList.remove("hidden"));
+      document.querySelector(".project-picker").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    const defaultButton =
+      Array.from(projectButtons).find(button => button.closest(".pick-card").textContent.toLowerCase().includes("vraem")) ||
+      projectButtons[0];
+    if (defaultButton) {
+      showProject(defaultButton.dataset.target, false);
+    }
+  </script>
+</body>
+</html>
